@@ -66,3 +66,12 @@ git clone https://github.com/bcgsc/arcs.git
 ./autogen.sh
 ./configure && make
 ```
+
+## Installing Longranger
+```{bash}
+curl -o longranger-2.2.2.tar.gz "http://cf.10xgenomics.com/releases/genome/longranger-2.2.2.tar.gz?Expires=1531828518&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9nZW5vbWUvbG9uZ3Jhbmdlci0yLjIuMi50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE1MzE4Mjg1MTh9fX1dfQ__&Signature=gK9K5cKBIKxPYjcj58Z3BaRx37Hk24JU~c78wzGWOHGNQtHV3T13zeGKalGqvj0xWJoKfZf7YekPV542XrWVwITmwIzt0QLTh4yAgHqOqSL2bIMwM9SuOOK78~aJ0TQ2YGMS1Ta8v1SkJKv8BhDcaHc9YKXq~tDiJLSYnKcJ7sWTwZZLZLPW9tq3OVm4hLj27lLPkseC3LsSRHnx~6N2aFxzFeFTzFnvfWNwudGK6YRNy34hBaaI-Bn5~NoMXl2k20Cw8cBomntcg3e~C0ZrPhtQjajjYQ5Z-ws3G7SvPpWnGskCTg~xWX9D4MNdi16m~FV9WoNCeqScm8aKkU~1Hw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA"
+
+tar -xvzf longranger-2.2.2.tar.gzls
+
+export PATH=/home/eoziolor/program/longranger-2.2.2:$PATH
+```
