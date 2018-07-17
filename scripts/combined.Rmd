@@ -75,3 +75,55 @@ tar -xvzf longranger-2.2.2.tar.gzls
 
 export PATH=/home/eoziolor/program/longranger-2.2.2:$PATH
 ```
+
+## Checking MD5Sum of downloaded files
+
+```{bash}
+#!/bin/bash -l
+#SBATCH -J md5check
+#SBATCH -o md5sum-%j.o
+#SBATCH -e md5sum-%j.o
+#SBATCH -N 1
+#SBATCH -n 8
+#SBATCH --time=0-01:00
+#SBATCH --mem=60000
+
+md5sum /home/eoziolor/phgenome/data/raw/*.fastq.gz > /home/eoziolor/phgenome/data/raw/md5post.txt
+```
+
+* matches downloaded md5 sum
+
+# Running ARCS pipeline
+
+## Creating interleaved fastq
+
+* Using proc10xG
+
+```{bash}
+git clone https://github.com/ucdavis-bioinformatics/proc10xG.git
+
+###Creating trimmed interleaved files
+
+#!/bin/bash -l
+#SBATCH -J md5check
+#SBATCH -o md5sum-%j.o
+#SBATCH -e md5sum-%j.o
+#SBATCH -N 1
+#SBATCH -n 8
+#SBATCH --time=0-02:00
+#SBATCH --mem=60000
+
+#programs and files
+prog=/home/eoziolor/program/proc10xG/process_10xReads.py
+file1=/home/eoziolor/phgenome/data/raw/PH-Sitka-93_S1_L008_R1_001.fastq.gz
+file2=/home/eoziolor/phgenome/data/raw/PH-Sitka-93_S1_L008_R2_001.fastq.gz
+output=/home/eoziolor/phgenome/data/trim/PH-Sitka-93_S1_L008_RA_001.fastq.gz
+
+$prog \
+-1 $file1 \
+-2 $file2 \
+-t 7 \
+-o stdout | \
+gzip > $output
+
+```
