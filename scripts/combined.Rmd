@@ -215,6 +215,38 @@ sum(head(fai_10.1[,2],n=221))/1000000
 fai_10.1[221,2]/1000000
 
 ```
+###ARKS run 2
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(reshape)
+
+fai<-read.csv("~/phgenome_post/data/arks/arks1_c5_m50-10000_k30_r0.05_e30000_z500_l5_a0.3.scaffolds",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+
+fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
+
+ord<-order(fai_10[,2],decreasing=TRUE)
+fai_10.1<-fai_10[ord,]
+
+fai_10.1<-fai_10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(fai_10.1)<-c("arkscaf","size_bp","oldscaf","size_kb")
+
+ggplot(fai_10.1,
+       aes(x=size_kb))+
+#  scale_y_log10()+
+  scale_x_log10()+
+  geom_histogram(bins=1000)+
+  theme_classic()
+
+#calculating N50
+(sum(fai_10.1[,2])/1000000)/2
+sum(head(fai_10.1[,2],n=215))/1000000
+fai_10.1[215,2]/1000000
+
+```
 
 ## Compare to supernova
 
@@ -258,3 +290,16 @@ ggplot(comb10k,
   scale_y_log10()+
   theme_classic()
 ```
+
+#### Plotting multiplicities from run2
+
+```{r}
+multi<-read.csv("~/phgenome_post/data/arks/multiplicities_run2.csv",header=FALSE,stringsAsFactors = FALSE)
+small<-multi[multi[,2]<50,]
+hist(small[,2],breaks=2000)
+```
+
+* No real reason to increase multiplicities range to meet more reads. None above 10000, the ones below 50 are pretty much lone pairs
+
+
+
