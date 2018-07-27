@@ -191,7 +191,7 @@ library(dplyr)
 library(magrittr)
 library(reshape)
 
-fai<-read.csv("~/phgenome_post/data/arks/phgenome.hap_c5_m50-6000_k30_r0.05_e30000_z500_l5_a0.9.scaffolds",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+fai<-read.csv("~/phgenome_post/data/arks/arks1",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
 
 fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
 
@@ -223,7 +223,7 @@ library(dplyr)
 library(magrittr)
 library(reshape)
 
-fai<-read.csv("~/phgenome_post/data/arks/arks1_c5_m50-10000_k30_r0.05_e30000_z500_l5_a0.3.scaffolds",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+fai<-read.csv("~/phgenome_post/data/arks/arks2",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
 
 fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
 
@@ -417,6 +417,37 @@ ggplot(comb10k,
   scale_x_log10()+
 #  scale_y_log10()+
   theme_classic()
+
+plot(fai_10.1[1:1000,4],pch=20,cex=1,col="red")
+points(faisup10.1[1:1000,3],pch=20,cex=1,col="blue")
+```
+
+####Looking at progress over time with the ARKS pipeline
+
+```{r}
+arks_files<-list.files("~/phgenome_post/data/arks", "arks*",full.names=TRUE)
+arks<-list()
+
+for(i in 1:length(arks_files)){
+  arks[[i]]<-read.csv(arks_files[i],header=FALSE,stringsAsFactors = FALSE)
+}
+nam<-gsub(".*\\/","",arks_files)
+names(arks)<-nam
+
+ord<-c()
+arks_ord<-list()
+
+for(i in 1:length(arks_files)){
+  arks[[i]][,4]<-arks[[i]][,2]/1000000
+  ord<-order(arks[[i]][,4],decreasing=TRUE)
+  arks_ord[[i]]<-arks[[i]][ord,]
+}
+
+plot(arks_ord[[length(arks_files)]][1:100,4],pch=20,cex=1)
+for(i in 1:(length(arks_files)-1)){
+  points(arks_ord[[i]][,4],pch=20,cex=1)
+}
+
 ```
 
 #### Plotting multiplicities from run2
