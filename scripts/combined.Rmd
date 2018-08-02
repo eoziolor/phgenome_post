@@ -475,6 +475,38 @@ sum(head(fai_10.1[,2],n=104))/1000000
 fai_10.1[104,2]/1000000
 ```
 
+##Arks run 10
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(reshape)
+
+fai<-read.csv("~/phgenome_post/data/arks/arks10",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+
+fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
+
+ord<-order(fai_10[,2],decreasing=TRUE)
+fai_10.1<-fai_10[ord,]
+
+fai_10.1<-fai_10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(fai_10.1)<-c("arkscaf","size_bp","oldscaf","size_kb")
+
+ggplot(fai_10.1,
+       aes(x=size_kb))+
+#  scale_y_log10()+
+  scale_x_log10()+
+  geom_histogram(bins=1000)+
+  theme_classic()
+
+#calculating N50
+(sum(fai_10.1[,2])/1000000)/2
+sum(head(fai_10.1[,2],n=76))/1000000
+fai_10.1[76,2]/1000000
+```
+
 ## Supernova assembly
 
 ```{r}
