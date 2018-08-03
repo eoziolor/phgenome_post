@@ -507,6 +507,38 @@ sum(head(fai_10.1[,2],n=76))/1000000
 fai_10.1[76,2]/1000000
 ```
 
+##Arks run 11
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(reshape)
+
+fai<-read.csv("~/phgenome_post/data/arks/arks11",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+
+fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
+
+ord<-order(fai_10[,2],decreasing=TRUE)
+fai_10.1<-fai_10[ord,]
+
+fai_10.1<-fai_10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(fai_10.1)<-c("arkscaf","size_bp","oldscaf","size_kb")
+
+ggplot(fai_10.1,
+       aes(x=size_kb))+
+#  scale_y_log10()+
+  scale_x_log10()+
+  geom_histogram(bins=1000)+
+  theme_classic()
+
+#calculating N50
+(sum(fai_10.1[,2])/1000000)/2
+sum(head(fai_10.1[,2],n=76))/1000000
+fai_10.1[76,2]/1000000
+```
+
 ## Supernova assembly
 
 ```{r}
@@ -591,5 +623,109 @@ hist(small[,2],breaks=2000)
 
 * No real reason to increase multiplicities range to meet more reads. None above 10000, the ones below 50 are pretty much lone pairs
 
+## AltArks pipeline
+##Arks run 7b
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(reshape)
+
+fai<-read.csv("~/phgenome_post/data/altarks/arks7b",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+
+fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
+
+ord<-order(fai_10[,2],decreasing=TRUE)
+fai_10.1<-fai_10[ord,]
+
+fai_10.1<-fai_10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(fai_10.1)<-c("arkscaf","size_bp","oldscaf","size_kb")
+
+ggplot(fai_10.1,
+       aes(x=size_kb))+
+#  scale_y_log10()+
+  scale_x_log10()+
+  geom_histogram(bins=1000)+
+  theme_classic()
+
+#calculating N50
+(sum(fai_10.1[,2])/1000000)/2
+sum(head(fai_10.1[,2],n=203))/1000000
+fai_10.1[203,2]/1000000
+```
 
 
+## Supernova assembly
+
+```{r}
+faisup<-read.table("~/phgenome_post/data/supernova/phgenome.hap.fa.fai",header=FALSE,stringsAsFactors = FALSE)
+faisup10<-faisup[faisup[,2]>10000,]
+ord<-order(faisup10[,2],decreasing=TRUE)
+faisup10.1<-faisup10[ord,1:2]
+
+faisup10.1<-faisup10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(faisup10.1)<-c("supscaf","size_bp","size_kb")
+
+ggplot(faisup10.1,
+       aes(x=size_kb))+
+  scale_x_log10()+
+  geom_histogram(bins=1000)+
+  theme_classic()
+
+#Calculating N50
+(sum(faisup10.1[,2])/1000000)/2
+sum(head(faisup10.1[,2],n=250))/1000000
+faisup10.1[250,2]/1000000
+```
+
+#### Now let's compare the two assemblies
+
+```{r}
+arks10k<-cbind("arks",melt(fai_10.1[,4]))
+colnames(arks10k)<-c("scaf","size_kb")
+sup10k<-cbind("sup",melt(faisup10.1[,3]))
+colnames(sup10k)<-c("scaf","size_kb")
+
+comb10k<-rbind(arks10k,sup10k)
+
+ggplot(comb10k,
+       aes(x=size_kb))+
+  geom_histogram(data=subset(comb10k,scaf=="arks"),fill="red",bins=200,alpha=.5)+
+  geom_histogram(data=subset(comb10k,scaf=="sup"),fill="blue",bins=200,alpha=.5)+
+  scale_x_log10()+
+#  scale_y_log10()+
+  theme_classic()
+
+plot(fai_10.1[1:1000,4],pch=20,cex=1,col="red")
+points(faisup10.1[1:1000,3],pch=20,cex=1,col="blue")
+```
+
+####Looking at progress over time with the ARKS pipeline
+
+```{r}
+arks_files<-list.files("~/phgenome_post/data/altarks", "arks*",full.names=TRUE)
+arks<-list()
+
+for(i in 1:length(arks_files)){
+  arks[[i]]<-read.csv(arks_files[i],header=FALSE,stringsAsFactors = FALSE)
+}
+nam<-gsub(".*\\/","",arks_files)
+names(arks)<-nam
+
+ord<-c()
+arks_ord<-list()
+
+for(i in 1:length(arks_files)){
+  arks[[i]][,4]<-arks[[i]][,2]/1000000
+  ord<-order(arks[[i]][,4],decreasing=TRUE)
+  arks_ord[[i]]<-arks[[i]][ord,]
+}
+
+plot(arks_ord[[length(arks_files)]][1:200,4],pch=20,cex=1)
+for(i in 1:(length(arks_files)-1)){
+  points(arks_ord[[i]][,4],pch=20,cex=1)
+}
+```
