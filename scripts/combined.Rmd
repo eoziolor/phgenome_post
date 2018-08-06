@@ -667,6 +667,38 @@ sum(head(fai_10.1[,2],n=57))/1000000
 fai_10.1[57,2]/1000000
 ```
 
+##Arks run 16 - after tigmint
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(reshape)
+
+fai<-read.csv("~/phgenome_post/data/arks/arks16",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+
+fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
+
+ord<-order(fai_10[,2],decreasing=TRUE)
+fai_10.1<-fai_10[ord,]
+
+fai_10.1<-fai_10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(fai_10.1)<-c("arkscaf","size_bp","oldscaf","size_kb")
+
+ggplot(fai_10.1,
+       aes(x=size_kb))+
+#  scale_y_log10()+
+  scale_x_log10()+
+  geom_histogram(bins=1000)+
+  theme_classic()
+
+#calculating N50
+(sum(fai_10.1[,2])/1000000)/2
+sum(head(fai_10.1[,2],n=100))/1000000
+fai_10.1[100,2]/1000000
+```
+
 ## Supernova assembly
 
 ```{r}
@@ -734,10 +766,11 @@ for(i in 1:length(arks_files)){
   arks_ord[[i]]<-arks[[i]][ord,]
 }
 
-plot(arks_ord[[length(arks_files)]][1:200,4],pch=20,cex=1)
+plot(arks_ord[[length(arks_files)]][1:200,4],pch=20,cex=1,ylim=c(0,20))
 for(i in 1:(length(arks_files)-1)){
   points(arks_ord[[i]][,4],pch=20,cex=1)
 }
+points(arks_ord[[16]][,4],pch=20,cex=1,col="red")
 
 ```
 
@@ -1040,6 +1073,38 @@ sum(head(fai_10.1[,2],n=170))/1000000
 fai_10.1[170,2]/1000000
 ```
 
+##Arks run 16b
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(reshape)
+
+fai<-read.csv("~/phgenome_post/data/altarks/arks16b",header=FALSE,stringsAsFactors = FALSE) #reading in fai file produced from arks
+
+fai_10<-fai[fai[,2]>10000,] #only selecting scaffolds above 10kb
+
+ord<-order(fai_10[,2],decreasing=TRUE)
+fai_10.1<-fai_10[ord,]
+
+fai_10.1<-fai_10.1 %>% 
+  mutate(size_kb=V2/1000)
+colnames(fai_10.1)<-c("arkscaf","size_bp","oldscaf","size_kb")
+
+ggplot(fai_10.1,
+       aes(x=size_kb))+
+#  scale_y_log10()+
+  scale_x_log10()+
+  geom_histogram(bins=200)+
+  theme_classic()
+
+#calculating N50
+(sum(fai_10.1[,2])/1000000)/2
+sum(head(fai_10.1[,2],n=166))/1000000
+fai_10.1[166,2]/1000000
+```
+
 ## Supernova assembly
 
 ```{r}
@@ -1107,7 +1172,7 @@ for(i in 1:length(arks_files)){
   arks_ord[[i]]<-arks[[i]][ord,]
 }
 
-plot(arks_ord[[length(arks_files)]][1:200,4],pch=20,cex=1)
+plot(arks_ord[[length(arks_files)]][1:200,4],pch=20,cex=1,ylim=c(0,7))
 for(i in 1:(length(arks_files)-1)){
   points(arks_ord[[i]][,4],pch=20,cex=1)
 }
